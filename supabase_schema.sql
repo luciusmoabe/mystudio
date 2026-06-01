@@ -106,6 +106,40 @@ CREATE TABLE IF NOT EXISTS servicos_portfolio (
 );
 
 -- ─────────────────────────────────────────
+-- PERFIL DO ESTÚDIO
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS perfil_estudio (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id           UUID UNIQUE NOT NULL,
+  nome_estudio      TEXT NOT NULL,
+  nome_profissional TEXT NOT NULL,
+  cpf               TEXT,
+  cnpj              TEXT,
+  endereco          TEXT,
+  cidade            TEXT,
+  uf                TEXT,
+  telefone          TEXT,
+  email             TEXT,
+  logo_url          TEXT,
+  created_at        TIMESTAMPTZ DEFAULT now()
+);
+
+-- ─────────────────────────────────────────
+-- FAVORECIDOS (Alvos da Sessão / Filhos / Modelos)
+-- ─────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS favorecidos (
+  id              TEXT PRIMARY KEY,
+  user_id         UUID NOT NULL,
+  cliente_id      TEXT REFERENCES clientes(id) ON DELETE CASCADE,
+  nome            TEXT NOT NULL,
+  data_nascimento TEXT,
+  parentesco      TEXT,
+  telefone        TEXT,
+  obs             TEXT,
+  created_at      TIMESTAMPTZ DEFAULT now()
+);
+
+-- ─────────────────────────────────────────
 -- RLS — Acesso público (sem auth por enquanto)
 -- ─────────────────────────────────────────
 ALTER TABLE clientes           ENABLE ROW LEVEL SECURITY;
@@ -114,6 +148,8 @@ ALTER TABLE leads              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE despesas           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE configuracoes      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE servicos_portfolio ENABLE ROW LEVEL SECURITY;
+ALTER TABLE perfil_estudio     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE favorecidos        ENABLE ROW LEVEL SECURITY;
 
 -- Políticas permissivas (acesso total via anon key)
 CREATE POLICY "allow_all_clientes"           ON clientes           FOR ALL USING (true) WITH CHECK (true);
@@ -122,3 +158,5 @@ CREATE POLICY "allow_all_leads"              ON leads              FOR ALL USING
 CREATE POLICY "allow_all_despesas"           ON despesas           FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "allow_all_configuracoes"      ON configuracoes      FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "allow_all_servicos_portfolio" ON servicos_portfolio FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "allow_all_perfil_estudio"     ON perfil_estudio     FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "allow_all_favorecidos"        ON favorecidos        FOR ALL USING (true) WITH CHECK (true);

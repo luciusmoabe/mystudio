@@ -15,9 +15,16 @@ export default function OnboardingPage() {
 
   const finish = async () => {
     setSaving(true);
-    await saveProfile(f);
-    setSaving(false);
-    // O AuthGuard vai redirecionar automaticamente
+    try {
+      const res = await saveProfile(f);
+      if (res?.error) {
+        alert('Erro ao salvar perfil: ' + (res.error.message || JSON.stringify(res.error)));
+      }
+    } catch (e: any) {
+      alert('Erro inesperado: ' + (e.message || e));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const inputStyle = {
